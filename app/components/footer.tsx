@@ -36,7 +36,7 @@ const Footer = () => {
           <div className="text-white w-full sm:w-auto">
             <h1 className="text-lg md:text-xl font-bold">Our Company</h1>
             <div className='space-y-2'>
-              <h1><Link href={'/'}>About us</Link></h1>
+              <h1><Link href={'/about'}>About us</Link></h1>
               <h1><Link href={'/'}>Vacancies</Link></h1>
               <h1><Link href={'/'}>Contact us</Link></h1>
               <h1><Link href={'/'}>Privacy</Link></h1>

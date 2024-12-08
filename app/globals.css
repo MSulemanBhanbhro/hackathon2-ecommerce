@@ -5,6 +5,11 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
+/* styles/globals.css */
+body {
+  font-family: 'Satoshi', sans-serif;
+}
+
 
 @layer utilities {
   .text-balance {

@@ -30,7 +30,7 @@ const Navbar = () => {
 
           {/* Cart and Contact Icons (Right for Large Devices) */}
           <div className="hidden md:flex gap-4">
-            <IoCartOutline size={25} className="text-[#2A254B]" />
+            <Link href={'/shopping'}><IoCartOutline size={25} className="text-[#2A254B]" /></Link>
             <IoIosContact size={25} className="text-[#2A254B]" />
           </div>
 
