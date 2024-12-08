@@ -99,7 +99,7 @@ const About = () => {
                             <div className="flex flex-col w-full md:w-1/4 p-4 rounded-lg">
                                 <MdOutlinePriceChange size={30} className="text-[#2A254B]" />
                                 <p className="py-4 font-semibold">Unbeatable prices</p>
-                                <p>For our material and quality, you won't find better prices anywhere.</p>
+                                <p>For our material and quality, you won&rsquo;t find better prices anywhere.</p>
                             </div>
 
                             <div className="flex flex-col w-full md:w-1/4 p-4 rounded-lg">
