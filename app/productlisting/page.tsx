@@ -8,7 +8,7 @@ import { MdOutlinePriceChange } from "react-icons/md";
 
 
 const ProductListing = () => {
-  const [value, setValue] = useState(4);
+  const [value, setValue] = useState(1);
   const handelvalue = ()=>{
     setValue(value+1)
   }
