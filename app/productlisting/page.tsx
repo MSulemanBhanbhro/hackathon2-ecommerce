@@ -1,11 +1,20 @@
+'use client'
 import Image from 'next/image';
-import React from 'react';
+import React, { useState } from 'react';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { LuSprout } from "react-icons/lu";
 import { MdOutlinePriceChange } from "react-icons/md";
 
+
 const ProductListing = () => {
+  const [value, setValue] = useState(4);
+  const handelvalue = ()=>{
+    setValue(value+1)
+  }
+  const minusValue = ()=>{
+    setValue(value > 0 ? value-1 : 0)
+  }
   const features = [
     {
       title: 'Next day as standard',
@@ -87,7 +96,7 @@ const ProductListing = () => {
                     <div className="flex items-center gap-4">
                       <h1>Amount:</h1>
                       <button className="flex gap-4 bg-[#F5F5F5] rounded-md px-4 py-2">
-                        <span>+</span> 1 <span>-</span>
+                        <span onClick={minusValue}>-</span> {value} <span onClick={handelvalue}>+</span>
                       </button>
                     </div>
                     <button className="w-full md:w-[146px] h-[56px] bg-[#2A254B] text-white mt-4 md:mt-0">

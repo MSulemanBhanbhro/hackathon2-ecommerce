@@ -111,7 +111,7 @@ const About = () => {
                     </div>
 
                     <div
-                        className="w-full h-[444px] border-2 border-black bg-cover bg-center flex justify-center items-center"
+                        className="w-full h-[444px]  bg-cover bg-center flex justify-center items-center"
                         style={{
                             backgroundImage: "url('/images/back.png')",
                         }}
