@@ -16,7 +16,7 @@ const About = () => {
                         </h1>
                     </div>
 
-                    <div className='flex flex-col md:flex-row gap-8 mt-[300px]'>
+                    <div className='flex flex-col md:flex-row gap-8 mt-[200px]'>
                         <div className='w-full md:w-1/2 h-auto px-4 md:px-12 py-8 flex flex-col justify-between'>
                             <div>
                                 <h1 className='text-xl md:text-2xl'>
@@ -121,9 +121,9 @@ const About = () => {
                                 <input
                                     type="text"
                                     placeholder="your@email.com"
-                                    className="p-4 bg-[#F9F9F9] w-full md:w-[354px] h-[56px] outline-none mb-4 md:mb-0"
+                                    className="p-4 bg-[#F9F9F9] w-[350px] md:w-[354px] h-[56px] outline-none mb-4 md:mb-0 md:mt-0 mt-6"
                                 />
-                                <button className='p-2 bg-[#2A254B] text-white w-full md:w-[118px] h-[56px]'>
+                                <button className='p-2 bg-[#2A254B] text-white w-[200px] md:w-[118px] h-[56px]'>
                                     Signup
                                 </button>
                             </form>

@@ -15,7 +15,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="p-4 w-full h-auto">
+      <div className="p-4 w-full h-auto sticky top-0 z-50 relative bg-white">
         {/* Top Section */}
         <div className="flex justify-between items-center py-2">
           {/* Search Icon (Left for Large Devices) */}
@@ -24,7 +24,7 @@ const Navbar = () => {
           </div>
 
           {/* Avion (Logo - Centered on Large Devices) */}
-          <h1 className="text-[#22202E] text-xl md:text-2xl md:absolute md:left-1/2 md:transform md:-translate-x-1/2">
+          <h1 className="text-[#2A254B] text-xl md:text-2xl md:absolute md:left-1/2 md:transform md:-translate-x-1/2">
             Avion
           </h1>
 

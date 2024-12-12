@@ -12,13 +12,13 @@ const Product = () => {
     <>
       <section>
         <div className='px-8 py-12 text-[#2A254B] mt-12'>
-          <h1 className='text-2xl'>Our popular products</h1>
+          <h1 className='text-2xl font-semibold'>Our popular products</h1>
 
           {/* Flexbox layout: stack on small screens, side by side on medium and large screens */}
           <div className='flex flex-col md:flex-row gap-8 mt-8'>
             
             {/* Product 1 */}
-            <div className='w-full md:w-[700px] h-auto'>
+            <div className='w-full md:w-[650px] h-auto'>
               <Image
                 src={'/images/large.png'}
                 height={800}
