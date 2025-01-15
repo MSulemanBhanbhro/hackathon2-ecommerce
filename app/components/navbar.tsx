@@ -5,7 +5,7 @@ import { IoCartOutline } from 'react-icons/io5';
 import { IoIosContact } from 'react-icons/io';
 import { IoMenu, IoClose } from 'react-icons/io5';
 import Link from 'next/link';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from "../redux/store"; 
 
 const NavbarClient = () => {

@@ -1,13 +1,11 @@
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { TbTruckDelivery } from 'react-icons/tb';
-import { IoIosCheckmarkCircleOutline } from "react-icons/io";
-import { LuSprout } from "react-icons/lu";
-import { MdOutlinePriceChange } from "react-icons/md";
 import { useParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '@/app/redux/cartSlice';
+
+
 
 type Product = {
   id: number;
