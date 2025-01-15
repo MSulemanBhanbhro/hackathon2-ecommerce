@@ -5,11 +5,9 @@ import { IoCartOutline } from 'react-icons/io5';
 import { IoIosContact } from 'react-icons/io';
 import { IoMenu, IoClose } from 'react-icons/io5';
 import Link from 'next/link';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from "../redux/store"; 
+
 
 const NavbarClient = () => {
-  const cartItems = useSelector((state: RootState) => state.cart.items);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -28,33 +26,21 @@ const NavbarClient = () => {
           Avion
         </h1>
 
-        <div className="hidden md:flex gap-4">
-          <div className="relative">
-          <Link href={'/shopping'}>
-          <span className='absolute -top-1 -right-2 text-xs bg-red-500 rounded-full px-1.5 py-0.5 text-white'> {cartItems.length}</span>
-            <IoCartOutline size={25} className="text-[#2A254B]" />
-          </Link>
-
-          </div>
+        <div className="md:flex gap-4">
+          
+            <>
+              <Link href={'/shopping'}>
+                <IoCartOutline size={25} className="text-[#2A254B] hidden md:flex" />
+              </Link>
+              <Link href={'/'}>
+                <IoIosContact size={25} className="text-[#2A254B]" />
+              </Link>
+            </>
          
-          
-          
-              <IoIosContact size={25} cursor={'pointer'} className="text-[#2A254B] animate-ping" />
-           
         </div>
 
         <div className="flex items-center gap-4 md:hidden">
           <CiSearch size={25} className="text-[#2A254B]" />
-          <Link href={'/shopping'}>
-            <IoCartOutline size={25} className="text-[#2A254B]" />
-          </Link>
-
-          {/* Mobile User Button */}
-          
-         
-              <IoIosContact size={25} cursor={'pointer'} className="text-[#2A254B]" />
-            
-
           <button className="text-2xl focus:outline-none z-30" onClick={toggleMenu}>
             {!menuOpen && <IoMenu />}
           </button>
@@ -63,7 +49,6 @@ const NavbarClient = () => {
 
       <hr />
 
-      {/* Mobile Menu */}
       <header
         className={`fixed top-0 right-0 py-6 h-full w-3/4 bg-white shadow-lg transition-transform duration-300 ease-in-out ${
           menuOpen ? 'translate-x-0' : 'translate-x-full'
