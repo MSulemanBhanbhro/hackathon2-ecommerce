@@ -155,7 +155,7 @@ const ProductListing = () => {
 
           {/* Popup */}
           {popupVisible && (
-            <div className="fixed top-[90px] right-0 transform -translate-x-1/2 bg-[#2A254B] text-white px-6 py-3 rounded-md shadow-lg z-50">
+            <div className="fixed lg:top-[90px] md:top-[90px] top-[70px] lg:right-0 md:right-0 right-20 transform -translate-x-1/2 bg-[#2A254B] text-white px-6 py-3 rounded-md shadow-lg z-50">
               Item added to cart!
             </div>
           )}

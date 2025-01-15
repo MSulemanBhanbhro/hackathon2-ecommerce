@@ -46,6 +46,7 @@ const NavbarClient = () => {
         <div className="flex items-center gap-4 md:hidden">
           <CiSearch size={25} className="text-[#2A254B]" />
           <Link href={'/shopping'}>
+          <span className='absolute top-4 [-right-8 text-xs bg-red-500 rounded-full px-1.5 py-0.5 text-white'> {cartItems.length}</span>
             <IoCartOutline size={25} className="text-[#2A254B]" />
           </Link>
 
