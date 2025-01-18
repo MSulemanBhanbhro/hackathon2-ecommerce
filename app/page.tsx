@@ -7,7 +7,10 @@ import Touch from "./components/touch";
 
 import ProductsPage from "./products/page";
 
+
 export default function Home() {
+ 
+
   return (
     <>
       <Hero />
