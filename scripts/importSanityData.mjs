@@ -3,7 +3,7 @@
 import axios from "axios";
 import { createClient } from '@sanity/client' ;
 import slugify from 'slugify';
-import dotenv from 'dotenv'
+
 
 
 
