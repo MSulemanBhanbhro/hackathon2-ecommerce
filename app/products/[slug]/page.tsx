@@ -1,167 +1,188 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '@/app/redux/cartSlice';
-
-
+import { client } from '@/sanity/lib/client';
+import { useWishlist } from '@/app/context/WishlistContext';
+import Link from 'next/link';
 
 type Product = {
-  id: number;
+  _id: number;
   name: string;
-  price: number;
-  descriptionTitle: string;
+  slug: string;
+  imageUrl: string;
+  categoryName: string;
   description: string;
-  image: string;
-  dimensionTitle: string;
-  dimension: {
-    height: number;
+  price: number;
+  dimensions: {
     width: number;
+    height: number;
     depth: number;
   };
 };
 
-const products: Product[] = [
-  {
-    id: 1,
-    name: "The Dandy Chair",
-    price: 250,
-    descriptionTitle: "Description",
-    description: "The Dendy Chair combines comfort and contemporary design...",
-    image: '/images/chair.png',
-    dimensionTitle: "Dimensions",
-    dimension: { height: 500, width: 75, depth: 50 },
-  },
-  {
-    id: 2,
-    name: "The Vase",
-    price: 155,
-    descriptionTitle: "Description",
-    description: "The Vase is a timeless decorative piece...",
-    image: '/images/vase.png',
-    dimensionTitle: "Dimensions",
-    dimension: { height: 500, width: 75, depth: 50 },
-  },
-  {
-    id: 3,
-    name: "The silky",
-    price: 125,
-    descriptionTitle: "Description",
-    description: "The Silky Vase is a blend of elegance and simplicity, designed to bring a touch of refinement to your space. Its smooth, silky finish exudes sophistication, while the minimalist silhouette ensures versatility for any decor style. Perfect for showcasing fresh blooms, dried arrangements, or standing gracefully on its own, this vase adds charm and warmth to both modern and classic interiors.",
-    image: '/images/silky.png',
-    dimensionTitle: "Dimensions",
-    dimension: { height: 500, width: 75, depth: 50 },
+async function getData(slug: string) {
+  const query = `*[_type == "product" && slug.current == "${slug}"][0]{
+    _id,
+    name,
+    "slug": slug.current,
+    "imageUrl": image.asset->url,
+    "categoryName": category->name,
+    description,
+    price,
+    "dimensions": dimensions {
+      width,
+      height,
+      depth
+    },
+    "categorySlug": category->slug.current
+  }`;
 
-},
-{
-    id: 4,
-    name: "The Lucky Lamp",
-    price: 399,
-    descriptionTitle: "Description",
-    description: "The Lucky Lamp is a charming and functional lighting piece designed to add a warm, inviting glow to any room. With its elegant yet modern design, this lamp features a smooth, minimalist base and a soft, diffused light that creates a cozy atmosphere. Perfect for living rooms, bedrooms, or workspaces, The Lucky Lamp combines style and practicality, bringing both illumination and a touch of luck to your home. Its versatile design complements any decor, making it a timeless addition to your interiors.",
-    image: '/images/lamp.png',
-    dimensionTitle: "Dimensions",
-    dimension: { height: 500, width: 75, depth: 50 },
+  const product = await client.fetch(query);
+  if (!product) return null;
 
+  const relatedQuery = `*[_type == "product" && category->slug.current == "${product.categorySlug}" && slug.current != "${slug}"]{
+    _id,
+    name,
+    "slug": slug.current,
+    "imageUrl": image.asset->url,
+    price
+  }`;
+
+  const relatedProducts = await client.fetch(relatedQuery);
+  return { product, relatedProducts };
 }
-];
 
-const ProductListing = () => {
+const ProductListing = ({ params }: { params: { slug: string } }) => {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [popupMessage, setPopupMessage] = useState<string | null>(null);
   const dispatch = useDispatch();
-  const params = useParams();
-  const productId = Number(params.id);
-  const product = products.find((prod) => prod.id === productId);
+  const { addToWishlist } = useWishlist();
 
-  const [popupVisible, setPopupVisible] = useState(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getData(params.slug);
+      if (data) {
+        setProduct(data.product);
+        setRelatedProducts(data.relatedProducts);
+      }
+    };
+    fetchData();
+  }, [params.slug]);
 
   if (!product) {
-    return <div>Product not found</div>;
+    return <div className="text-center text-lg mt-10">Product not found</div>;
   }
 
+  // ✅ Add to Cart Function
   const handleAddToCart = () => {
     dispatch(addToCart({
-      id: product.id,
+      id: product._id,
       name: product.name,
       price: product.price,
       quantity: 1,
-      image: product.image,
+      image: product.imageUrl,
       description: product.description,
     }));
+    showPopup("Item added to cart!");
+  };
 
-    // Show popup
-    setPopupVisible(true);
+  // ✅ Add to Wishlist Function
+  const handleAddToWishlist = () => {
+    addToWishlist({ ...product, _id: product._id.toString() });
+    showPopup("Item added to wishlist!");
+  };
 
-    // Auto-close popup after 3 seconds
-    setTimeout(() => {
-      setPopupVisible(false);
-    }, 3000);
+  // ✅ Show Popup Message
+  const showPopup = (message: string) => {
+    setPopupMessage(message);
+    setTimeout(() => setPopupMessage(null), 3000);
   };
 
   return (
-    <>
-      <section>
-        <div className="px-4 md:px-8 lg:px-12 py-8 md:py-12">
-          <div className="flex flex-col md:flex-row gap-2 items-center">
-            <div className="w-full md:w-1/2 h-auto">
-              <Image
-                src={product.image}
-                height={1000}
-                width={1000}
-                alt={product.name}
-                className="w-full h-[50vh] md:h-[80vh] object-contain rounded-md"
-              />
-            </div>
-            <div className="w-full md:w-1/2 px-4 md:px-10 py-6 flex flex-col justify-center">
-              <div>
-                <p className="text-xl md:text-2xl font-semibold">{product.name}</p>
-                <p className="py-2 text-lg md:text-xl">${product.price}</p>
-              </div>
-              <div className="text-[#505977] text-sm md:text-base">
-                <h1 className="font-semibold">{product.descriptionTitle}</h1>
-                <div className="my-4 md:my-6">
-                  <p>{product.description}</p>
-                </div>
-
-                <div className="my-8">
-                  <h1 className="font-semibold">{product.dimensionTitle}</h1>
-                </div>
-                <div className="flex gap-12 md:gap-20 text-sm md:text-base">
-                  <div>
-                    <h1>Height</h1>
-                    <p>{product.dimension.height}</p>
-                  </div>
-                  <div>
-                    <h1>Width</h1>
-                    <p>{product.dimension.width}</p>
-                  </div>
-                  <div>
-                    <h1>Depth</h1>
-                    <p>{product.dimension.depth}</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap justify-between items-center mt-8">
-                  <button
-                    className="w-full md:w-[146px] h-[56px] bg-[#2A254B] text-white mt-4 md:mt-0"
-                    onClick={handleAddToCart}
-                  >
-                    Add to cart
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Popup */}
-          {popupVisible && (
-            <div className="fixed lg:top-[90px] md:top-[90px] top-[70px] lg:right-0 md:right-0 right-20 transform -translate-x-1/2 bg-[#2A254B] text-white px-6 py-3 rounded-md shadow-lg z-50">
-              Item added to cart!
-            </div>
-          )}
+    <section className="px-4 md:px-8 lg:px-12 py-8 md:py-12">
+      <div className="flex flex-col md:flex-row gap-6 items-center">
+        <div className="w-full md:w-1/2">
+          <Image
+            src={product.imageUrl}
+            width={700}
+            height={700}
+            alt={product.name}
+            className="w-full h-[400px] object-cover rounded-md"
+          />
         </div>
-      </section>
-    </>
+        <div className="w-full md:w-1/2 px-4 md:px-10 py-6">
+          <h1 className="text-2xl font-semibold">{product.name}</h1>
+          <p className="text-lg md:text-xl py-2">${product.price}</p>
+          <p className="text-[#505977] text-sm md:text-base">{product.description}</p>
+
+          {/* ✅ Dimensions Section */}
+          {/* ✅ Dimensions Section */}
+{/* ✅ Dimensions Section */}
+<div className="mt-4 p-4 border border-gray-300 rounded-md">
+  <h3 className="text-lg font-semibold mb-3">Product Dimensions</h3>
+  <div className="grid grid-cols-2 gap-y-2 text-gray-700">
+    <span className="font-medium text-2xl">Width:</span>
+    <span className="text-right text-xl">{product.dimensions.width} </span>
+
+    <span className="font-medium text-2xl">Height:</span>
+    <span className="text-right text-xl">{product.dimensions.height} </span>
+
+    <span className="font-medium text-2xl">Depth:</span>
+    <span className="text-right text-xl">{product.dimensions.depth} </span>
+  </div>
+</div>
+
+
+
+          <div className="mt-6 flex gap-4">
+            <button
+              className="w-[150px] h-[50px] bg-[#2A254B] text-white rounded-md"
+              onClick={handleAddToCart}
+            >
+              Add to cart
+            </button>
+            <button
+              className="w-[150px] h-[50px] bg-red-500 text-white rounded-md"
+              onClick={handleAddToWishlist}
+            >
+              Wishlist ❤️
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ✅ Popup Message */}
+      {popupMessage && (
+        <div className="fixed bottom-6 right-6 bg-[#2A254B] text-white px-6 py-3 rounded-lg shadow-lg transition-all transform duration-300 ease-in-out">
+          <p className="font-medium">{popupMessage}</p>
+        </div>
+      )}
+
+      {relatedProducts.length > 0 && (
+        <section className="mt-12">
+          <h2 className="text-xl font-semibold mb-4">Related Products</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {relatedProducts.map((item) => (
+              <div key={item._id} className="border p-4 rounded-md shadow-md h-[350px] flex flex-col items-center justify-between">
+                <Image
+                  src={item.imageUrl}
+                  width={200}
+                  height={200}
+                  alt={item.name}
+                  className="w-full h-[200px] object-cover rounded-md"
+                />
+                <h3 className="mt-2 text-lg font-medium">{item.name}</h3>
+                <p className="text-sm text-gray-600">${item.price}</p>
+                <Link href={`/product/${item.slug}`} className="text-blue-600 mt-2">View Product</Link>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+    </section>
   );
 };
 

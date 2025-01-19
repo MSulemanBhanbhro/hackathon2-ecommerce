@@ -1,4 +1,3 @@
-// features/cartSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface CartItem {
@@ -33,30 +32,27 @@ const cartSlice = createSlice({
       }
       state.totalQuantity += 1;
     },
-    removeFromCart(state, action: PayloadAction<string>) {
-      const itemIndex = state.items.findIndex(item => item.id === Number(action.payload));
+    removeFromCart(state, action: PayloadAction<number>) {
+      const itemIndex = state.items.findIndex(item => item.id === action.payload);
       if (itemIndex > -1) {
         state.totalQuantity -= state.items[itemIndex].quantity;
         state.items.splice(itemIndex, 1);
       }
     },
-
-    incrementQuantity(state, action: PayloadAction<string>) {
-        const item = state.items.find(item => item.id === Number(action.payload));
-        if (item) {
-          item.quantity += 1;
-          state.totalQuantity += 1;
-        }
-      },
-
-      decrementQuantity(state, action: PayloadAction<string>) {
-        const item = state.items.find(item => item.id === Number(action.payload));
-        if (item && item.quantity > 1) {
-          item.quantity -= 1;
-          state.totalQuantity -= 1;
-        }
-      },
-    
+    incrementQuantity(state, action: PayloadAction<number>) {
+      const item = state.items.find(item => item.id === action.payload);
+      if (item) {
+        item.quantity += 1;
+        state.totalQuantity += 1;
+      }
+    },
+    decrementQuantity(state, action: PayloadAction<number>) {
+      const item = state.items.find(item => item.id === action.payload);
+      if (item && item.quantity > 1) {
+        item.quantity -= 1;
+        state.totalQuantity -= 1;
+      }
+    },
   },
 });
 
