@@ -1,20 +1,15 @@
-"use strict";
-
 import axios from "axios";
-import { createClient } from '@sanity/client' ;
+import { createClient } from '@sanity/client';
 import slugify from 'slugify';
 
-
-
-
-// Create Sanity client
+// Create Sanity client using environment variables
 const client = createClient({
-  projectId: "2xuqpa7k",
-  dataset: "production",
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
   useCdn: false,
-  token: 'skjZ0K4ogvqsm4rdr00oXObgiQReSvnq7jYflVO8W0BXHlr13FafeiSJb8LLbvno9SqkkmfvbPptYGEmUSjglXnHBdZ2w0HpRjABwavm4XLwziqSgnf2aUx26xL8L3V8pPJt1cHmneb5x8KE19iz1IAIgoQ7F2T9v42DCKkqBXtrfPwd9ETm',
-  apiVersion: '2025-01-12'
-})
+  token: process.env.SANITY_API_TOKEN,
+  apiVersion: '2025-01-12',
+});
 
 // Function to upload an image to Sanity
 async function uploadImageToSanity(imageUrl) {

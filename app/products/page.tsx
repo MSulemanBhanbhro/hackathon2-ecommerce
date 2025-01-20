@@ -4,6 +4,7 @@ import { client } from "@/sanity/lib/client";
 import Image from "next/image";
 import Link from "next/link";
 import WishlistButton from "../components/WishlistButton";
+import { Loader } from "lucide-react";
 
 interface Product {
   _id: string;
@@ -15,9 +16,13 @@ interface Product {
 
 const ProductsPage = () => {
   const [data, setData] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4; // 🔹 Har page par 4 products dikhayenge
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       const query = `*[_type == "product" && image.asset != null]{
         _id,
         name,
@@ -27,17 +32,29 @@ const ProductsPage = () => {
       }`;
       const result = await client.fetch(query);
       setData(result || []);
+      setLoading(false);
     };
 
     fetchData();
   }, []);
 
+  // 🔹 Pagination ke liye slice function
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentProducts = data.slice(indexOfFirstItem, indexOfLastItem);
+  
+  const totalPages = Math.ceil(data.length / itemsPerPage); // 🔹 Total pages calculate kiye
+
   return (
     <section className="px-4 md:px-8 py-12 text-[#2A254B] mt-12">
       <h1 className="text-2xl font-semibold md:text-3xl">New Ceramics</h1>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 mt-12">
-        {data.length > 0 ? (
-          data.map((product) => (
+        {loading ? (
+          <div className="col-span-4 flex justify-center items-center">
+            <Loader className="w-12 h-12 animate-spin text-[#2A254B]" />
+          </div>
+        ) : currentProducts.length > 0 ? (
+          currentProducts.map((product) => (
             <div className="w-full h-auto" key={product._id}>
               <Link href={`/products/${product.slug}`}>
                 <Image
@@ -58,6 +75,38 @@ const ProductsPage = () => {
         ) : (
           <p className="text-center text-gray-500 col-span-4">No products found</p>
         )}
+      </div>
+
+      {/* 🔹 Pagination Controls with Page Numbers */}
+      <div className="flex justify-center mt-8 space-x-4">
+        <button
+          className={`px-4 py-2 border rounded-md ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-200"}`}
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+
+        {/* 🔹 Page Numbers */}
+        <div className="flex space-x-2">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index}
+              className={`px-3 py-2 border rounded-md ${currentPage === index + 1 ? "bg-[#2A254B] text-white" : "hover:bg-gray-200"}`}
+              onClick={() => setCurrentPage(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+
+        <button
+          className={`px-4 py-2 border rounded-md ${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-200"}`}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
       </div>
     </section>
   );
